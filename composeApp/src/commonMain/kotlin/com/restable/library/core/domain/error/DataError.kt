@@ -19,7 +19,9 @@ sealed interface DataError : Error {
     enum class NetworkError : DataError {
         NO_INTERNET,
         SERVER_ERROR,
-        REQUEST_FAILED
+        SERIALIZATION,
+        REQUEST_FAILED,
+        UNKNOWN
     }
 
     enum class ImageError : DataError {
