@@ -20,7 +20,7 @@ val bookCommonModule = module {
     viewModelOf(::BookDetailViewModel)
     single { AddToWishlistUseCase(get()) }
     single { SearchBooksUseCase(get()) }
-    single<BookRepository> { BookRepositoryImpl() }
+    single<BookRepository> { BookRepositoryImpl(get(), get()) }
     single<RemoteBookDataSource> { RemoteBookDataSourceImpl(get()) }
     single {
         get<DatabaseFactory>().create()
