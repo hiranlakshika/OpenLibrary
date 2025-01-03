@@ -8,6 +8,7 @@ import io.ktor.client.statement.HttpResponse
 import io.ktor.util.network.UnresolvedAddressException
 import kotlinx.coroutines.ensureActive
 import kotlin.coroutines.coroutineContext
+import com.restable.library.core.domain.Result
 
 
 suspend inline fun <reified T> safeCall(

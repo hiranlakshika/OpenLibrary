@@ -11,7 +11,6 @@ import com.restable.library.book.domain.usecase.AddToWishlistUseCase
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
 import com.restable.library.book.presentation.book_list.BookListViewModel
 import com.restable.library.book.presentation.bool_details.BookDetailViewModel
-import com.restable.library.core.data.HttpClientFactory
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -28,5 +27,4 @@ val bookCommonModule = module {
             .build()
     }
     single { get<WishlistDatabase>().localBookDao }
-    single { HttpClientFactory.create(get()) }
 }
