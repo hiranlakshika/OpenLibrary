@@ -9,8 +9,8 @@ interface BookRepository {
     suspend fun searchBooks(query: String): Flow<List<Book>>
     suspend fun getBookDescription(bookId: String): Result<String?, DataError>
 
-    fun getFavoriteBooks(): Flow<List<Book>>
-    fun isBookFavorite(id: String): Flow<Boolean>
+    fun getLocalBooks(): Flow<List<Book>>
+    fun isBookLocal(id: String): Flow<Boolean>
 
     suspend fun addToWishlist(book: Book): DataError.LocalDataError
     suspend fun deleteFromWishlist(id: String)

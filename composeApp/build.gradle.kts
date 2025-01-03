@@ -42,6 +42,10 @@ kotlin {
             implementation(libs.koin.android)
             implementation(libs.koin.androidx.compose)
             implementation(libs.ktor.client.okhttp)
+            implementation(libs.splash)
+            implementation(libs.lottie.compose)
+            implementation(libs.androidx.compose.material3)
+            implementation(libs.androidx.compose.material.icons.extended)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
