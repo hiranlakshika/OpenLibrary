@@ -1,4 +1,4 @@
-package com.restable.library.book.presentation.book_list
+package com.restable.library.book.presentation.components
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
