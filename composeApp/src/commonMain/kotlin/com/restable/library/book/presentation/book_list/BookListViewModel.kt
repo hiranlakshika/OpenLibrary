@@ -26,6 +26,17 @@ class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : Vi
             BookListEvent.OnSearchError -> {
                 _state.update { it.copy(error = null, isLoading = false) }
             }
+
+            is BookListEvent.OnTabSelected -> {
+
+            }
+
+            is BookListEvent.OnBookClick -> {}
+            is BookListEvent.OnSearchQueryChange -> {
+                _state.update {
+                    it.copy(searchQuery = event.query)
+                }
+            }
         }
     }
 
@@ -38,7 +49,7 @@ class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : Vi
 
             is Result.Success -> {
                 result.data.onEach { data ->
-                    _state.update { it.copy(isLoading = false, surveyList = data) }
+                    _state.update { it.copy(isLoading = false, bookList = data) }
                 }.stateIn(this)
             }
         }
