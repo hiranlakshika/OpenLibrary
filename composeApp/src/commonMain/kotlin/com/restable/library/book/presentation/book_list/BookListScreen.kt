@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
@@ -14,7 +15,6 @@ import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material3.CenterAlignedTopAppBar
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -22,6 +22,8 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Tab
 import androidx.compose.material3.TabRow
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
@@ -37,7 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.restable.library.book.domain.model.Book
 import com.restable.library.book.presentation.components.SearchBar
-import com.restable.library.core.presentation.SandYellow
+import com.restable.library.core.presentation.BluePin
+import com.restable.library.core.presentation.components.DownloadingAnimation
 import org.koin.compose.viewmodel.koinViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -124,13 +127,13 @@ private fun BookListView(
                     .padding(vertical = 12.dp)
                     .widthIn(max = 700.dp)
                     .fillMaxWidth(),
-                /*indicator = { tabPositions ->
+                indicator = { tabPositions ->
                     TabRowDefaults.SecondaryIndicator(
-                        color = SandYellow,
+                        color = BluePin,
                         modifier = Modifier
                             .tabIndicatorOffset(tabPositions[state.selectedTabIndex])
                     )
-                }*/
+                }
             ) {
                 Tab(
                     selected = state.selectedTabIndex == 0,
@@ -138,7 +141,7 @@ private fun BookListView(
                         onEvent(BookListEvent.OnTabSelected(0))
                     },
                     modifier = Modifier.weight(1f),
-                    selectedContentColor = SandYellow,
+                    selectedContentColor = BluePin,
                     unselectedContentColor = Color.Black.copy(alpha = 0.5f)
                 ) {
                     Text(
@@ -153,7 +156,7 @@ private fun BookListView(
                         onEvent(BookListEvent.OnTabSelected(1))
                     },
                     modifier = Modifier.weight(1f),
-                    selectedContentColor = SandYellow,
+                    selectedContentColor = BluePin,
                     unselectedContentColor = Color.Black.copy(alpha = 0.5f)
                 ) {
                     Text(
@@ -178,7 +181,9 @@ private fun BookListView(
                     when (pageIndex) {
                         0 -> {
                             if (state.isLoading) {
-                                CircularProgressIndicator()
+                                DownloadingAnimation(
+                                    modifier = Modifier.height(48.dp).width(48.dp)
+                                )
                             } else {
                                 when {
                                     state.error != null -> {
