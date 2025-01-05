@@ -11,7 +11,6 @@ import com.restable.library.core.domain.EmptyResult
 import com.restable.library.core.domain.Result
 import com.restable.library.core.domain.error.DataError
 import com.restable.library.core.domain.map
-import com.restable.library.core.domain.onSuccess
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
@@ -19,17 +18,14 @@ class BookRepositoryImpl(
     private val remoteBookDataSource: RemoteBookDataSource,
     private val localBookDao: LocalBookDao
 ) : BookRepository {
-    override suspend fun searchBooks(query: String): List<Book> {
-        var bookResult = emptyList<Book>()
-        remoteBookDataSource
-            .searchBooks(query)
+    override suspend fun searchBooks(query: String):
+            Result<List<Book>, DataError.NetworkError> {
+        return remoteBookDataSource
+            .searchBooks(query, resultLimit = 10)
             .map { dto ->
                 dto.results.map { it.toBook() }
-            }.onSuccess {
-                bookResult = it
             }
 
-        return bookResult
     }
 
     override suspend fun getBookDescription(bookId: String): Result<String?, DataError> {

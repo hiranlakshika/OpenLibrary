@@ -11,21 +11,28 @@ import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Tab
-import androidx.compose.material.TabRow
-import androidx.compose.material.Text
-import androidx.compose.material.TopAppBar
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.CenterAlignedTopAppBar
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRow
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.restable.library.book.domain.model.Book
@@ -33,6 +40,7 @@ import com.restable.library.book.presentation.components.SearchBar
 import com.restable.library.core.presentation.SandYellow
 import org.koin.compose.viewmodel.koinViewModel
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookListScreen(viewModel: BookListViewModel = koinViewModel(), onBookClick: (Book) -> Unit) {
 
@@ -40,11 +48,30 @@ fun BookListScreen(viewModel: BookListViewModel = koinViewModel(), onBookClick: 
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Open Library") }
+            CenterAlignedTopAppBar(
+                colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primaryContainer,
+                    titleContentColor = MaterialTheme.colorScheme.primary,
+                ),
+                title = {
+                    Text(
+                        "Open Library",
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                },
+                navigationIcon = {
+                    IconButton(onClick = { /* do something */ }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = "Localized description"
+                        )
+                    }
+                },
+                scrollBehavior = TopAppBarDefaults.pinnedScrollBehavior(rememberTopAppBarState()),
             )
-        }
-    ) {
+        },
+    ) { innerPadding ->
         BookListView(
             state,
             onEvent = { event ->
@@ -54,13 +81,17 @@ fun BookListScreen(viewModel: BookListViewModel = koinViewModel(), onBookClick: 
                 }
                 viewModel.onEvent(event)
             },
+            modifier = Modifier.padding(innerPadding)
         )
     }
 }
 
 @Composable
-private fun BookListView(state: BookListState, onEvent: (BookListEvent) -> Unit) {
-    val keyboardController = LocalSoftwareKeyboardController.current
+private fun BookListView(
+    state: BookListState,
+    onEvent: (BookListEvent) -> Unit,
+    modifier: Modifier = Modifier,
+) {
 
     val pagerState = rememberPagerState { 2 }
     val searchResultsListState = rememberLazyListState()
@@ -78,10 +109,11 @@ private fun BookListView(state: BookListState, onEvent: (BookListEvent) -> Unit)
         onEvent(BookListEvent.OnTabSelected(pagerState.currentPage))
     }
 
-    Column(modifier = Modifier.padding(top = 12.dp)) {
+    Column(modifier = modifier) {
         SearchBar(
             searchQuery = state.searchQuery,
             onSearchQueryChange = { onEvent(BookListEvent.OnSearchQueryChange(it)) },
+            modifier = Modifier.padding(top = 12.dp)
         )
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
@@ -143,9 +175,9 @@ private fun BookListView(state: BookListState, onEvent: (BookListEvent) -> Unit)
                         .fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    when(pageIndex) {
+                    when (pageIndex) {
                         0 -> {
-                            if(state.isLoading) {
+                            if (state.isLoading) {
                                 CircularProgressIndicator()
                             } else {
                                 when {
@@ -153,18 +185,20 @@ private fun BookListView(state: BookListState, onEvent: (BookListEvent) -> Unit)
                                         Text(
                                             text = state.error,
                                             textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.body2,
-                                            color = MaterialTheme.colors.error
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.error
                                         )
                                     }
+
                                     state.bookList.isEmpty() -> {
                                         Text(
                                             text = "No results found",
                                             textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.body2,
-                                            color = MaterialTheme.colors.error
+                                            style = MaterialTheme.typography.bodySmall,
+                                            color = MaterialTheme.colorScheme.error
                                         )
                                     }
+
                                     else -> {
                                         BookList(
                                             books = state.bookList,
@@ -178,12 +212,13 @@ private fun BookListView(state: BookListState, onEvent: (BookListEvent) -> Unit)
                                 }
                             }
                         }
+
                         1 -> {
-                            if(state.wishlistBooks.isEmpty()) {
+                            if (state.wishlistBooks.isEmpty()) {
                                 Text(
                                     text = "Empty",
                                     textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.body1,
+                                    style = MaterialTheme.typography.bodySmall,
                                 )
                             } else {
                                 BookList(

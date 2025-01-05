@@ -9,8 +9,7 @@ import com.restable.library.core.domain.error.LibraryException
 class SearchBooksUseCase(private val bookRepository: BookRepository) {
     suspend operator fun invoke(query: String): Result<List<Book>, DataError.NetworkError> {
         return try {
-            val result = bookRepository.searchBooks(query)
-            Result.Success(data = result)
+            bookRepository.searchBooks(query)
         } catch (exception: LibraryException) {
             Result.Error(error = (exception.error as DataError.NetworkError))
         }
