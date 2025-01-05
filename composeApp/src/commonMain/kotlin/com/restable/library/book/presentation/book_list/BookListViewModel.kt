@@ -3,19 +3,18 @@ package com.restable.library.book.presentation.book_list
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
+import com.restable.library.core.domain.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.launch
-import com.restable.library.core.domain.Result
-import kotlinx.coroutines.flow.stateIn
 
 class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : ViewModel() {
 
     private val _state = MutableStateFlow(BookListState())
     val state get() = _state
+
 
     fun onEvent(event: BookListEvent) {
         when (event) {
@@ -28,7 +27,7 @@ class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : Vi
             }
 
             is BookListEvent.OnTabSelected -> {
-
+                _state.update { it.copy(selectedTabIndex = event.index) }
             }
 
             is BookListEvent.OnBookClick -> {}
@@ -36,6 +35,7 @@ class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : Vi
                 _state.update {
                     it.copy(searchQuery = event.query)
                 }
+                getBooks(event.query)
             }
         }
     }
@@ -48,9 +48,7 @@ class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : Vi
             }
 
             is Result.Success -> {
-                result.data.onEach { data ->
-                    _state.update { it.copy(isLoading = false, bookList = data) }
-                }.stateIn(this)
+                _state.update { it.copy(isLoading = false, bookList = result.data) }
             }
         }
     }
