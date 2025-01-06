@@ -2,19 +2,27 @@ package com.restable.library.book.presentation.book_list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.restable.library.book.domain.usecase.GetWishListUseCase
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
 import com.restable.library.core.domain.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : ViewModel() {
+class BookListViewModel(
+    private val searchBooksUseCase: SearchBooksUseCase,
+    private val getWishListUseCase: GetWishListUseCase,
+) : ViewModel() {
 
     private val _state = MutableStateFlow(BookListState())
     val state get() = _state
 
+    init {
+        fetchLocalBooks()
+    }
 
     fun onEvent(event: BookListEvent) {
         when (event) {
@@ -49,6 +57,20 @@ class BookListViewModel(private val searchBooksUseCase: SearchBooksUseCase) : Vi
 
             is Result.Success -> {
                 _state.update { it.copy(isLoading = false, bookList = result.data) }
+            }
+        }
+    }
+
+    private fun fetchLocalBooks() = viewModelScope.launch(Dispatchers.IO) {
+        when (val result = getWishListUseCase()) {
+            is Result.Error -> {
+                _state.update { it.copy(isLoading = false, error = result.error.name) }
+            }
+
+            is Result.Success -> {
+                _state.update {
+                    it.copy(isLoading = false, wishlistBooks = result.data.first())
+                }
             }
         }
     }
