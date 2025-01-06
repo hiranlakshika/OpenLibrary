@@ -5,5 +5,6 @@ import com.restable.library.book.domain.model.Book
 data class BookDetailState(
     val error: String? = null,
     val isLoading: Boolean = false,
+    val isLocal: Boolean = false,
     val book: Book? = null
 )
