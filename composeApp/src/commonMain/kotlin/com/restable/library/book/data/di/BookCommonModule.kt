@@ -8,6 +8,7 @@ import com.restable.library.book.data.remote.RemoteBookDataSourceImpl
 import com.restable.library.book.data.repository.BookRepositoryImpl
 import com.restable.library.book.domain.repository.BookRepository
 import com.restable.library.book.domain.usecase.AddToWishlistUseCase
+import com.restable.library.book.domain.usecase.GetBookDescriptionUseCase
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
 import com.restable.library.book.presentation.book_list.BookListViewModel
 import com.restable.library.book.presentation.bool_details.BookDetailViewModel
@@ -19,6 +20,7 @@ import org.koin.dsl.module
 val bookCommonModule = module {
     single { AddToWishlistUseCase(get()) }
     single { SearchBooksUseCase(get()) }
+    single { GetBookDescriptionUseCase(get()) }
     single {
         get<DatabaseFactory>().create()
             .setDriver(BundledSQLiteDriver())

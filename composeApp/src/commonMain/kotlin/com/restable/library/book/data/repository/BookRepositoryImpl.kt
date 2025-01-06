@@ -19,17 +19,22 @@ class BookRepositoryImpl(
     private val localBookDao: LocalBookDao
 ) : BookRepository {
     override suspend fun searchBooks(query: String):
-            Result<List<Book>, DataError.NetworkError> {
-        return remoteBookDataSource
-            .searchBooks(query, resultLimit = 10)
-            .map { dto ->
-                dto.results.map { it.toBook() }
-            }
-
-    }
+            Result<List<Book>, DataError.NetworkError> = remoteBookDataSource
+        .searchBooks(query, resultLimit = 10)
+        .map { dto ->
+            dto.results.map { it.toBook() }
+        }
 
     override suspend fun getBookDescription(bookId: String): Result<String?, DataError> {
-        TODO("Not yet implemented")
+        val localResult = localBookDao.getWishlistBookById(bookId)
+
+        return if (localResult == null) {
+            remoteBookDataSource
+                .getBookDetails(bookId)
+                .map { it.description }
+        } else {
+            Result.Success(localResult.description)
+        }
     }
 
     override fun getLocalBooks(): Flow<List<Book>> = localBookDao

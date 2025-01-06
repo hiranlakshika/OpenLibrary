@@ -40,6 +40,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.restable.library.book.domain.model.Book
 import com.restable.library.book.presentation.components.SearchBar
 import com.restable.library.core.presentation.BluePin
+import com.restable.library.core.presentation.Red500
 import com.restable.library.core.presentation.components.DownloadingAnimation
 import org.koin.compose.viewmodel.koinViewModel
 
@@ -200,7 +201,7 @@ private fun BookListView(
                                             text = "No results found",
                                             textAlign = TextAlign.Center,
                                             style = MaterialTheme.typography.bodySmall,
-                                            color = MaterialTheme.colorScheme.error
+                                            color = Red500
                                         )
                                     }
 
@@ -224,6 +225,7 @@ private fun BookListView(
                                     text = "Empty",
                                     textAlign = TextAlign.Center,
                                     style = MaterialTheme.typography.bodySmall,
+                                    color = Red500
                                 )
                             } else {
                                 BookList(
