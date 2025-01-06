@@ -25,7 +25,7 @@ class BookRepositoryImpl(
             dto.results.map { it.toBook() }
         }
 
-    override suspend fun getBookDescription(bookId: String): Result<String?, DataError> {
+    override suspend fun getBookDescription(bookId: String): Result<String?, DataError.NetworkError> {
         val localResult = localBookDao.getWishlistBookById(bookId)
 
         return if (localResult == null) {

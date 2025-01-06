@@ -7,8 +7,8 @@ import androidx.navigation.toRoute
 import com.restable.library.app.Route
 import com.restable.library.book.domain.repository.BookRepository
 import com.restable.library.book.domain.usecase.CheckWishlistStatusUseCase
+import com.restable.library.book.domain.usecase.GetBookDescriptionUseCase
 import com.restable.library.core.domain.Result
-import com.restable.library.core.domain.onSuccess
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
@@ -24,7 +24,8 @@ import kotlinx.coroutines.launch
 class BookDetailViewModel(
     private val bookRepository: BookRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val checkWishlistStatusUseCase: CheckWishlistStatusUseCase
+    private val checkWishlistStatusUseCase: CheckWishlistStatusUseCase,
+    private val getBookDescriptionUseCase: GetBookDescriptionUseCase,
 ) : ViewModel() {
 
     private val bookId = savedStateHandle.toRoute<Route.BookDetail>().id
@@ -82,14 +83,16 @@ class BookDetailViewModel(
         }
     }
 
-    private fun fetchBookDescription() {
-        viewModelScope.launch {
-            bookRepository.getBookDescription(bookId).onSuccess { description ->
+    private fun fetchBookDescription() = viewModelScope.launch(Dispatchers.IO) {
+        when (val result = getBookDescriptionUseCase(bookId)) {
+            is Result.Error -> {
+                _state.update { it.copy(isLoading = false, error = result.error.name) }
+            }
+
+            is Result.Success -> {
                 _state.update {
                     it.copy(
-                        book = it.book?.copy(
-                            description = description
-                        ), isLoading = false
+                        book = it.book?.copy(description = result.data)
                     )
                 }
             }

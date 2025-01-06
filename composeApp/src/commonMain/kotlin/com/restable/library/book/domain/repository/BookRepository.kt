@@ -10,7 +10,7 @@ interface BookRepository {
     suspend fun searchBooks(query: String):
             Result<List<Book>, DataError.NetworkError>
 
-    suspend fun getBookDescription(bookId: String): Result<String?, DataError>
+    suspend fun getBookDescription(bookId: String): Result<String?, DataError.NetworkError>
 
     fun getLocalBooks(): Flow<List<Book>>
     fun isBookLocal(id: String): Flow<Boolean>

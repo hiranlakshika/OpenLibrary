@@ -1,6 +1,7 @@
 package com.restable.library.book.presentation.bool_details
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -109,6 +110,13 @@ fun BookDetailScreenCom(
                         LanguageChip(it.uppercase())
                     }
                 }
+            }
+
+            if (book.description?.isNotEmpty() == true) {
+                Text(
+                    text = book.description,
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                )
             }
         }
     })
