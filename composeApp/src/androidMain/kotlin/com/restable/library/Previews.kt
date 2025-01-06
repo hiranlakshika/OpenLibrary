@@ -21,6 +21,8 @@ fun BookDetailScreenComPreview() {
             ratingCount = 100,
             numPages = 1200,
             numEditions = 3
-        )
+        ),
+        onBackPressed = {},
+        onEvent = TODO()
     )
 }
