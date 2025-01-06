@@ -8,6 +8,7 @@ import com.restable.library.book.data.remote.RemoteBookDataSourceImpl
 import com.restable.library.book.data.repository.BookRepositoryImpl
 import com.restable.library.book.domain.repository.BookRepository
 import com.restable.library.book.domain.usecase.AddToWishlistUseCase
+import com.restable.library.book.domain.usecase.CheckWishlistStatusUseCase
 import com.restable.library.book.domain.usecase.GetBookDescriptionUseCase
 import com.restable.library.book.domain.usecase.GetWishListUseCase
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
@@ -24,6 +25,7 @@ val bookCommonModule = module {
     single { SearchBooksUseCase(get()) }
     single { GetBookDescriptionUseCase(get()) }
     single { GetWishListUseCase(get()) }
+    single { CheckWishlistStatusUseCase(get()) }
     single {
         get<DatabaseFactory>().create()
             .setDriver(BundledSQLiteDriver())

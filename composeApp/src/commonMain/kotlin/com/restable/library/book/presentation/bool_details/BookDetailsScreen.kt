@@ -38,7 +38,7 @@ fun BookDetailScreen(viewModel: BookDetailViewModel, onBackPressed: () -> Unit) 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
     state.book?.let {
-        BookDetailScreenCom(it, onBackPressed, onEvent = { event ->
+        BookDetailScreenCom(it, onBackPressed, state = state, onEvent = { event ->
             viewModel.onEvent(event)
         })
     }

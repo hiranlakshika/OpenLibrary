@@ -6,7 +6,12 @@ import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.restable.library.app.Route
 import com.restable.library.book.domain.repository.BookRepository
+import com.restable.library.book.domain.usecase.CheckWishlistStatusUseCase
+import com.restable.library.core.domain.Result
 import com.restable.library.core.domain.onSuccess
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.IO
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
@@ -19,9 +24,11 @@ import kotlinx.coroutines.launch
 class BookDetailViewModel(
     private val bookRepository: BookRepository,
     private val savedStateHandle: SavedStateHandle,
+    private val checkWishlistStatusUseCase: CheckWishlistStatusUseCase
 ) : ViewModel() {
 
     private val bookId = savedStateHandle.toRoute<Route.BookDetail>().id
+    private var updateWishlistStatusJob: Job? = null
 
     private val _state = MutableStateFlow(BookDetailState())
     val state
@@ -29,8 +36,8 @@ class BookDetailViewModel(
             fetchBookDescription()
             updateWishlistStatus()
         }.stateIn(
-                viewModelScope, SharingStarted.WhileSubscribed(5000L), _state.value
-            )
+            viewModelScope, SharingStarted.WhileSubscribed(5000L), _state.value
+        )
 
     fun onEvent(event: BookDetailEvent) {
         when (event) {
@@ -56,27 +63,36 @@ class BookDetailViewModel(
         }
     }
 
-    private fun updateWishlistStatus() {
-        bookRepository.isBookLocal(bookId).onEach { isLocal ->
-                _state.update {
-                    it.copy(
-                        isLocal = isLocal
-                    )
-                }
-            }.launchIn(viewModelScope)
+    private fun updateWishlistStatus() = viewModelScope.launch(Dispatchers.IO) {
+        when (val result = checkWishlistStatusUseCase(bookId)) {
+            is Result.Error -> {
+                _state.update { it.copy(isLoading = false, error = result.error.name) }
+            }
+
+            is Result.Success -> {
+                updateWishlistStatusJob?.cancel()
+                updateWishlistStatusJob = result.data.onEach { isLocal ->
+                    _state.update {
+                        it.copy(
+                            isLocal = isLocal
+                        )
+                    }
+                }.launchIn(viewModelScope)
+            }
+        }
     }
 
     private fun fetchBookDescription() {
         viewModelScope.launch {
             bookRepository.getBookDescription(bookId).onSuccess { description ->
-                    _state.update {
-                        it.copy(
-                            book = it.book?.copy(
-                                description = description
-                            ), isLoading = false
-                        )
-                    }
+                _state.update {
+                    it.copy(
+                        book = it.book?.copy(
+                            description = description
+                        ), isLoading = false
+                    )
                 }
+            }
         }
     }
 }

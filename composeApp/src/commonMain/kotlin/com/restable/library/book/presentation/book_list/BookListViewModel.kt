@@ -21,7 +21,7 @@ class BookListViewModel(
     private val searchBooksUseCase: SearchBooksUseCase,
     private val getWishListUseCase: GetWishListUseCase,
 ) : ViewModel() {
-    private var observeFavoriteJob: Job? = null
+    private var observeWishlistJob: Job? = null
     private val _state = MutableStateFlow(BookListState())
     val state = _state.onStart {
         fetchLocalBooks()
@@ -73,8 +73,8 @@ class BookListViewModel(
             }
 
             is Result.Success -> {
-                observeFavoriteJob?.cancel()
-                observeFavoriteJob = result.data.onEach { value ->
+                observeWishlistJob?.cancel()
+                observeWishlistJob = result.data.onEach { value ->
                     _state.update {
                         it.copy(isLoading = false, wishlistBooks = value)
                     }
