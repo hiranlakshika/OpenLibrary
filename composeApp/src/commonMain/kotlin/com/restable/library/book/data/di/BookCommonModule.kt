@@ -12,6 +12,7 @@ import com.restable.library.book.domain.usecase.GetBookDescriptionUseCase
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
 import com.restable.library.book.presentation.book_list.BookListViewModel
 import com.restable.library.book.presentation.bool_details.BookDetailViewModel
+import com.restable.library.book.presentation.SelectedBookViewModel
 import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.bind
@@ -31,4 +32,5 @@ val bookCommonModule = module {
     singleOf(::BookRepositoryImpl).bind<BookRepository>()
     viewModelOf(::BookListViewModel)
     viewModelOf(::BookDetailViewModel)
+    viewModelOf(::SelectedBookViewModel)
 }

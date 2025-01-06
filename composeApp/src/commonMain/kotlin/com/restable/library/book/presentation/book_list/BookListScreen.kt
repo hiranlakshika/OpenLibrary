@@ -200,7 +200,7 @@ private fun BookListView(
                                         Text(
                                             text = "No results found",
                                             textAlign = TextAlign.Center,
-                                            style = MaterialTheme.typography.bodySmall,
+                                            style = MaterialTheme.typography.bodyLarge,
                                             color = Red500
                                         )
                                     }
@@ -224,7 +224,7 @@ private fun BookListView(
                                 Text(
                                     text = "Empty",
                                     textAlign = TextAlign.Center,
-                                    style = MaterialTheme.typography.bodySmall,
+                                    style = MaterialTheme.typography.bodyLarge,
                                     color = Red500
                                 )
                             } else {

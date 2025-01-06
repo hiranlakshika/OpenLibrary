@@ -16,7 +16,7 @@ import com.restable.library.book.domain.model.Book
 import com.restable.library.book.presentation.components.BookImage
 
 @Composable
-fun BookDetailScreen(viewModel: BookDetailViewModel) {
+fun BookDetailScreen(viewModel: BookDetailViewModel, onBackPressed: () -> Unit) {
 
     val state by viewModel.state.collectAsStateWithLifecycle()
 
