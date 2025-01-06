@@ -15,7 +15,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
-import com.restable.library.book.presentation.SelectedBookViewModel
+import com.restable.library.book.presentation.selected_book.SelectedBookViewModel
 import com.restable.library.book.presentation.book_list.BookListScreen
 import com.restable.library.book.presentation.book_list.BookListViewModel
 import com.restable.library.book.presentation.bool_details.BookDetailEvent
@@ -38,7 +38,19 @@ fun App() {
                 composable<Route.BookList>(exitTransition = { slideOutHorizontally() },
                     popEnterTransition = { slideInHorizontally() }) {
                     val viewModel = koinViewModel<BookListViewModel>()
-                    BookListScreen(viewModel, onBookClick = {})
+                    val selectedBookViewModel =
+                        it.bookCommonModule<SelectedBookViewModel>(navController)
+
+                    LaunchedEffect(true) {
+                        selectedBookViewModel.onSelectBook(null)
+                    }
+
+                    BookListScreen(viewModel, onBookClick = { book ->
+                        selectedBookViewModel.onSelectBook(book)
+                        navController.navigate(
+                            Route.BookDetail(book.id)
+                        )
+                    })
                 }
                 composable<Route.BookDetail>(enterTransition = {
                     slideInHorizontally { initialOffset ->

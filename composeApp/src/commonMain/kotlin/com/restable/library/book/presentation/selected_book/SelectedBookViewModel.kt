@@ -1,4 +1,4 @@
-package com.restable.library.book.presentation
+package com.restable.library.book.presentation.selected_book
 
 import androidx.lifecycle.ViewModel
 import com.restable.library.book.domain.model.Book
