@@ -37,6 +37,7 @@ import com.restable.library.book.domain.model.Book
 import com.restable.library.core.presentation.White200
 import com.restable.library.core.presentation.Yellow300
 import com.restable.library.core.presentation.components.DownloadingAnimation
+import com.restable.library.core.utils.StringUtils.getRoundNumberText
 import kotlin.math.round
 
 @Composable
@@ -128,7 +129,7 @@ fun BookListItem(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${round(rating * 10) / 10.0}",
+                            text = getRoundNumberText(rating),
                             style = MaterialTheme.typography.bodySmall
                         )
                         Icon(

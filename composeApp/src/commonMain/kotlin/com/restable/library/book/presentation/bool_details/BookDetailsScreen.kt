@@ -35,6 +35,7 @@ import com.restable.library.book.domain.model.Book
 import com.restable.library.book.presentation.components.BookImage
 import com.restable.library.core.presentation.Red200
 import com.restable.library.core.presentation.Red500
+import com.restable.library.core.utils.StringUtils.getRoundNumberText
 import kotlin.math.round
 
 @Composable
@@ -121,7 +122,7 @@ fun BookDetailScreenCom(
                                 style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600)
                             )
                             Text(
-                                text = "${round(rating * 10) / 10.0}",
+                                text = getRoundNumberText(rating),
                                 style = MaterialTheme.typography.bodyLarge
                             )
                         }
