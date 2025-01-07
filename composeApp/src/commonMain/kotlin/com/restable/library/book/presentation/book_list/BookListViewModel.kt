@@ -8,6 +8,7 @@ import com.restable.library.core.domain.Result
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.launchIn
@@ -55,6 +56,7 @@ class BookListViewModel(
 
     private fun getBooks(query: String) = viewModelScope.launch(Dispatchers.IO) {
         _state.update { it.copy(isLoading = true) }
+        delay(5000L)
         when (val result = searchBooksUseCase(query)) {
             is Result.Error -> {
                 _state.update { it.copy(isLoading = false, error = result.error.name) }

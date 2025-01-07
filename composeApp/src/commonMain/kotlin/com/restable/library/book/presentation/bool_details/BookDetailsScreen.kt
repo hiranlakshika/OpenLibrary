@@ -1,7 +1,6 @@
 package com.restable.library.book.presentation.bool_details
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -9,6 +8,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Favorite
@@ -74,7 +75,7 @@ fun BookDetailScreenCom(
             },
         )
     }, content = { padding ->
-        Column(modifier = Modifier.padding(padding)) {
+        Column(modifier = Modifier.padding(padding).verticalScroll(rememberScrollState())) {
             Text(
                 text = book.title,
                 textAlign = TextAlign.Center,
@@ -82,22 +83,23 @@ fun BookDetailScreenCom(
                 modifier = Modifier.padding(vertical = 12.dp).padding(start = 8.dp)
             )
             Row(
-                modifier = Modifier.padding(bottom = 12.dp),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Center,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                BookImage(imageUrl = book.imageUrl)
-            }
-
-            IconButton(
-                onClick = { onEvent(BookDetailEvent.OnWishlistClick) },
-                modifier = Modifier.padding(bottom = 12.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.Favorite,
-                    contentDescription = "Wishlist Button",
-                    tint = if (state?.isLocal == true) Red500 else Red200
-                )
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                    BookImage(imageUrl = book.imageUrl)
+                    IconButton(
+                        onClick = { onEvent(BookDetailEvent.OnWishlistClick) },
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Filled.Favorite,
+                            contentDescription = "Wishlist Button",
+                            tint = if (state?.isLocal == true) Red500 else Red200
+                        )
+                    }
+                }
             }
 
             if (book.languages.isNotEmpty()) {
@@ -115,7 +117,8 @@ fun BookDetailScreenCom(
             if (book.description?.isNotEmpty() == true) {
                 Text(
                     text = book.description,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp)
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    textAlign = TextAlign.Justify
                 )
             }
         }
