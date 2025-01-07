@@ -25,6 +25,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +35,7 @@ import com.restable.library.book.domain.model.Book
 import com.restable.library.book.presentation.components.BookImage
 import com.restable.library.core.presentation.Red200
 import com.restable.library.core.presentation.Red500
+import kotlin.math.round
 
 @Composable
 fun BookDetailScreen(viewModel: BookDetailViewModel, onBackPressed: () -> Unit) {
@@ -57,14 +60,14 @@ fun BookDetailScreenCom(
     Scaffold(topBar = {
         CenterAlignedTopAppBar(
             colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer,
-                titleContentColor = MaterialTheme.colorScheme.primary,
+                containerColor = MaterialTheme.colorScheme.background
             ),
             title = {
                 Text(
                     book.title, maxLines = 1, overflow = TextOverflow.Ellipsis
                 )
             },
+            modifier = Modifier.shadow(elevation = 4.dp),
             navigationIcon = {
                 IconButton(onClick = { onBackPressed() }) {
                     Icon(
@@ -98,6 +101,30 @@ fun BookDetailScreenCom(
                             contentDescription = "Wishlist Button",
                             tint = if (state?.isLocal == true) Red500 else Red200
                         )
+                    }
+                    book.numPages?.let {
+                        Row(modifier = Modifier.padding(bottom = 8.dp)) {
+                            Text(
+                                text = "Pages - ",
+                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600)
+                            )
+                            Text(
+                                text = book.numPages.toString(),
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                    book.averageRating?.let { rating ->
+                        Row(modifier = Modifier.padding(bottom = 8.dp)) {
+                            Text(
+                                text = "Rating - ",
+                                style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.W600)
+                            )
+                            Text(
+                                text = "${round(rating * 10) / 10.0}",
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
                     }
                 }
             }

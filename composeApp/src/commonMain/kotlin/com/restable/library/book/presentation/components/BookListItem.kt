@@ -1,7 +1,5 @@
 package com.restable.library.book.presentation.components
 
-import androidx.compose.animation.core.animateFloatAsState
-import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -30,16 +28,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImagePainter
 import coil3.compose.rememberAsyncImagePainter
 import com.restable.library.book.domain.model.Book
-import com.restable.library.core.presentation.Green300
+import com.restable.library.core.presentation.White200
 import com.restable.library.core.presentation.Yellow300
 import com.restable.library.core.presentation.components.DownloadingAnimation
 import kotlin.math.round
@@ -51,10 +46,11 @@ fun BookListItem(
     modifier: Modifier = Modifier
 ) {
     Surface(
-        shape = RoundedCornerShape(32.dp),
+        shape = RoundedCornerShape(18.dp),
         modifier = modifier
             .clickable(onClick = onClick),
-        color = Green300
+        shadowElevation = 8.dp,
+        color = White200
     ) {
         Row(
             modifier = Modifier
@@ -87,17 +83,6 @@ fun BookListItem(
                         imageLoadResult = Result.failure(it.result.throwable)
                     }
                 )
-
-                val painterState by painter.state.collectAsStateWithLifecycle()
-                val transition by animateFloatAsState(
-                    targetValue = if (painterState is AsyncImagePainter.State.Success) {
-                        1f
-                    } else {
-                        0f
-                    },
-                    animationSpec = tween(durationMillis = 800)
-                )
-
                 when (val result = imageLoadResult) {
                     null -> DownloadingAnimation(modifier = Modifier.size(48.dp))
                     else -> {
@@ -114,12 +99,6 @@ fun BookListItem(
                                     ratio = 0.65f,
                                     matchHeightConstraintsFirst = true
                                 )
-                                .graphicsLayer {
-                                    rotationX = (1f - transition) * 30f
-                                    val scale = 0.8f + (0.2f * transition)
-                                    scaleX = scale
-                                    scaleY = scale
-                                }
                         )
                     }
                 }

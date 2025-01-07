@@ -32,6 +32,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
@@ -54,8 +55,7 @@ fun BookListScreen(viewModel: BookListViewModel = koinViewModel(), onBookClick: 
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary,
+                    containerColor = MaterialTheme.colorScheme.background
                 ),
                 title = {
                     Text(
@@ -64,6 +64,7 @@ fun BookListScreen(viewModel: BookListViewModel = koinViewModel(), onBookClick: 
                         overflow = TextOverflow.Ellipsis
                     )
                 },
+                modifier = Modifier.shadow(elevation = 4.dp),
                 navigationIcon = {
                     IconButton(onClick = { /* do something */ }) {
                         Icon(

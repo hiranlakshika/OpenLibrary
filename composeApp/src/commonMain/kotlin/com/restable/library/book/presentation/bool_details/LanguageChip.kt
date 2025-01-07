@@ -4,7 +4,7 @@ import androidx.compose.material3.SuggestionChip
 import androidx.compose.material3.SuggestionChipDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import com.restable.library.core.presentation.GreenPin
+import com.restable.library.core.presentation.Green100
 import com.restable.library.core.presentation.GreyBlack
 
 @Composable
@@ -13,7 +13,7 @@ fun LanguageChip(language: String) {
         onClick = { },
         label = { Text(language) },
         colors = SuggestionChipDefaults.suggestionChipColors(
-            containerColor = GreenPin,
+            containerColor = Green100,
             labelColor = GreyBlack
         )
     )
