@@ -8,23 +8,33 @@ import com.restable.library.book.data.remote.RemoteBookDataSourceImpl
 import com.restable.library.book.data.repository.BookRepositoryImpl
 import com.restable.library.book.domain.repository.BookRepository
 import com.restable.library.book.domain.usecase.AddToWishlistUseCase
+import com.restable.library.book.domain.usecase.CheckWishlistStatusUseCase
+import com.restable.library.book.domain.usecase.GetBookDescriptionUseCase
+import com.restable.library.book.domain.usecase.GetWishListUseCase
 import com.restable.library.book.domain.usecase.SearchBooksUseCase
 import com.restable.library.book.presentation.book_list.BookListViewModel
 import com.restable.library.book.presentation.bool_details.BookDetailViewModel
+import com.restable.library.book.presentation.selected_book.SelectedBookViewModel
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModelOf
+import org.koin.dsl.bind
 import org.koin.dsl.module
 
 val bookCommonModule = module {
-    viewModelOf(::BookListViewModel)
-    viewModelOf(::BookDetailViewModel)
     single { AddToWishlistUseCase(get()) }
     single { SearchBooksUseCase(get()) }
-    single<BookRepository> { BookRepositoryImpl(get(), get()) }
-    single<RemoteBookDataSource> { RemoteBookDataSourceImpl(get()) }
+    single { GetBookDescriptionUseCase(get()) }
+    single { GetWishListUseCase(get()) }
+    single { CheckWishlistStatusUseCase(get()) }
     single {
         get<DatabaseFactory>().create()
             .setDriver(BundledSQLiteDriver())
             .build()
     }
     single { get<WishlistDatabase>().localBookDao }
+    singleOf(::RemoteBookDataSourceImpl).bind<RemoteBookDataSource>()
+    singleOf(::BookRepositoryImpl).bind<BookRepository>()
+    viewModelOf(::BookListViewModel)
+    viewModelOf(::BookDetailViewModel)
+    viewModelOf(::SelectedBookViewModel)
 }

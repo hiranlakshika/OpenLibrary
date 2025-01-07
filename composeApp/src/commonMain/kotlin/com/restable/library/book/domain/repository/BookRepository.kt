@@ -7,8 +7,10 @@ import kotlinx.coroutines.flow.Flow
 import com.restable.library.core.domain.Result
 
 interface BookRepository {
-    suspend fun searchBooks(query: String): Flow<List<Book>>
-    suspend fun getBookDescription(bookId: String): Result<String?, DataError>
+    suspend fun searchBooks(query: String):
+            Result<List<Book>, DataError.NetworkError>
+
+    suspend fun getBookDescription(bookId: String): Result<String?, DataError.NetworkError>
 
     fun getLocalBooks(): Flow<List<Book>>
     fun isBookLocal(id: String): Flow<Boolean>

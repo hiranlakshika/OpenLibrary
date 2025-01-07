@@ -17,19 +17,24 @@ import kotlinx.coroutines.flow.map
 class BookRepositoryImpl(
     private val remoteBookDataSource: RemoteBookDataSource,
     private val localBookDao: LocalBookDao
-) :
-    BookRepository {
-    override suspend fun searchBooks(query: String): Flow<List<Book>> {
-        TODO("Not yet implemented")
-        /*return remoteBookDataSource
-            .searchBooks(query)
-            .map { dto ->
-                dto.results.map { it.toBook() }
-            }*/
-    }
+) : BookRepository {
+    override suspend fun searchBooks(query: String):
+            Result<List<Book>, DataError.NetworkError> = remoteBookDataSource
+        .searchBooks(query, resultLimit = 10)
+        .map { dto ->
+            dto.results.map { it.toBook() }
+        }
 
-    override suspend fun getBookDescription(bookId: String): Result<String?, DataError> {
-        TODO("Not yet implemented")
+    override suspend fun getBookDescription(bookId: String): Result<String?, DataError.NetworkError> {
+        val localResult = localBookDao.getWishlistBookById(bookId)
+
+        return if (localResult == null) {
+            remoteBookDataSource
+                .getBookDetails(bookId)
+                .map { it.description }
+        } else {
+            Result.Success(localResult.description)
+        }
     }
 
     override fun getLocalBooks(): Flow<List<Book>> = localBookDao
